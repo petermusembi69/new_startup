@@ -4,7 +4,15 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This simple project that has and auth screen and counter app screen.
+
+Riverpod is used as the state management library with adherence to the provider pattern.
+
+Firebase is used as the database and Hive as the local persistence database.
+
+### WIP
+CI/CD
+Tests.
 
 A few resources to get you started if this is your first Flutter project:
 
