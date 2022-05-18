@@ -12,7 +12,7 @@ class HomePage extends HookConsumerWidget {
     final counter = ref.watch(counterStateProvider);
     final signOutState = ref.watch(signOutStateProvider);
 
-    if (signOutState == null || signOutState == false) {
+    if (signOutState == null || signOutState) {
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
         Navigator.pushReplacement(
           context,

@@ -31,7 +31,7 @@ class DecisionPage extends HookConsumerWidget {
       builder: (context, ref, child) {
         final signOutProvider = ref.watch(signOutStateProvider);
 
-        if (signOutProvider == null || !signOutProvider) {
+        if (signOutProvider == null || signOutProvider) {
           _redirectToPage(
             context,
             page: const SignInPage(),

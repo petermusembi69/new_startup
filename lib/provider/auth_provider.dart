@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:new_startup/models/user_model.dart';
-import 'package:new_startup/services/hive_service.dart';
+import 'package:new_startup/repository/hive_repository.dart';
 
 part 'auth_provider.freezed.dart';
 
@@ -20,11 +20,17 @@ class AuthState with _$AuthState {
 
 final signInStateProvider =
     StateNotifierProvider<SignInStateNotifier, AuthState>((ref) {
-  return SignInStateNotifier();
+  final hiveRepository = ref.watch(hiveRepositoryProvider);
+
+  return SignInStateNotifier(hiveRepository);
 });
 
 class SignInStateNotifier extends StateNotifier<AuthState> {
-  SignInStateNotifier([AuthState? bool]) : super(const AuthState.initial());
+  SignInStateNotifier(HiveRepository hiveRepository, [AuthState? bool])
+      : _hiveRepository = hiveRepository,
+        super(const AuthState.initial());
+
+  final HiveRepository _hiveRepository;
 
   void singIn(String userName) async {
     state = const AuthState.loading();
@@ -37,7 +43,7 @@ class SignInStateNotifier extends StateNotifier<AuthState> {
         await databaseRef.set(CountModel(count: 0).toJson());
       }
 
-      HiveServiceImpl()
+      _hiveRepository
         ..persistUserModel(
           UserModel(
             name: userName,
@@ -64,17 +70,23 @@ class SignInStateNotifier extends StateNotifier<AuthState> {
 
 final signOutStateProvider =
     StateNotifierProvider<SignOutStateNotifier, bool?>((ref) {
-  return SignOutStateNotifier();
+  final hiveRepository = ref.watch(hiveRepositoryProvider);
+
+  return SignOutStateNotifier(hiveRepository);
 });
 
 class SignOutStateNotifier extends StateNotifier<bool?> {
-  SignOutStateNotifier([bool? bool])
-      : super(HiveServiceImpl().retrieveSigningStatus());
+  SignOutStateNotifier(HiveRepository hiveRepository, [bool? bool])
+      : _hiveRepository = hiveRepository,
+        super(hiveRepository.retrieveSigningStatus());
+
+  final HiveRepository _hiveRepository;
 
   void signOut() {
     try {
-      HiveServiceImpl().clearPrefs();
-      state = false;
+      _hiveRepository.clearPrefs();
+
+      state = true;
     } catch (e) {
       Logger().e(e.toString());
 
@@ -84,7 +96,7 @@ class SignOutStateNotifier extends StateNotifier<bool?> {
 
   void signIn() {
     try {
-      state = true;
+      state = false;
     } catch (e) {
       Logger().e(e.toString());
 
