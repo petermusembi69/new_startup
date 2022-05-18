@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:new_startup/provider/counter_provider.dart';
 import 'package:new_startup/provider/auth_provider.dart';
+import 'package:new_startup/repository/hive_repository.dart';
 import 'package:new_startup/ui/decision.dart';
 
 class HomePage extends HookConsumerWidget {
@@ -11,7 +12,12 @@ class HomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final counter = ref.watch(counterStateProvider);
     final signOutState = ref.watch(signOutStateProvider);
+    final hiveRepository = ref.watch(hiveRepositoryProvider);
 
+    final userName = hiveRepository.retrieveUserModel() != null
+        ? hiveRepository.retrieveUserModel()!.name + '\'s'
+        : '';
+        
     if (signOutState == null || signOutState) {
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
         Navigator.pushReplacement(
@@ -22,10 +28,10 @@ class HomePage extends HookConsumerWidget {
         );
       });
     }
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: Text('$userName Counter App'),
         centerTitle: true,
         actions: [
           IconButton(

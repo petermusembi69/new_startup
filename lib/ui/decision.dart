@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:new_startup/provider/auth_provider.dart';
 import 'package:new_startup/ui/home_page.dart';
 import 'package:new_startup/ui/sign_in_page.dart';
 
-class DecisionPage extends HookConsumerWidget {
+class DecisionPage extends StatefulHookConsumerWidget {
   const DecisionPage({
     Key? key,
   }) : super(key: key);
+
+  @override
+  DecisionPageState createState() => DecisionPageState();
+}
+
+class DecisionPageState extends ConsumerState<DecisionPage> {
+  @override
+  void initState() {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+    super.initState();
+  }
 
   void _redirectToPage(BuildContext context, {required Widget page}) {
     WidgetsBinding.instance!.addPostFrameCallback(
@@ -25,7 +42,7 @@ class DecisionPage extends HookConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     return HookConsumer(
       builder: (context, ref, child) {
